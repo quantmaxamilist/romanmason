@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/kit/PageHero.astro';
+import Enquiry from '../components/kit/Enquiry.astro';
+import Img from '../components/kit/Img.astro';
+import Column from '../components/site/Column.astro';
+import { about, seo } from '../data/site';
+import { feat, work } from '../data/extra';
+const numerals = ['I', 'II', 'III'];
+const byId = (id: string) => work.find((p) => p.id === id)!;
+---
+<Base title={seo.about.title} description={seo.about.description}>
+  <PageHero eyebrow={about.eyebrow} title={about.h1} lead={about.lead[0]} photo={feat.kitchen} />
+
+  <!-- "Named after two sons": the sentence stands between the two columns of the logo. -->
+  <section class="sons is-light section" data-header-theme="light">
+    <div class="wrap sons__in">
+      <div class="sons__col sons__col--l" data-reveal="fade"><Column /></div>
+      <div class="sons__col sons__col--r" data-reveal="fade" data-delay="0.12"><Column flip /></div>
+      <div class="sons__text">
+        <p class="display display--3 sons__h" data-reveal="lines">{about.lead[1]}</p>
+        <p class="lead sons__p" data-reveal="fade">{about.lead[2]}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diff is-stone section" data-header-theme="light">
+    <div class="wrap">
+      <div class="diff__head">
+        <p class="label eyebrow" data-reveal="fade">{about.different.eyebrow}</p>
+        <h2 class="display display--2 diff__h" data-reveal="lines">{about.different.h2}</h2>
+      </div>
+      <ol class="diff__list">
+        {about.different.points.map((p, i) => (
+          <li class="diff__item" data-reveal="fade">
+            <span class="diff__n numeral" aria-hidden="true">{numerals[i]}</span>
+            <h3 class="diff__t">{p.title}</h3>
+            <p class="diff__p">{p.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="jrny is-dark section" data-header-theme="dark">
+    <div class="wrap jrny__in">
+      <div class="jrny__media">
+        <figure class="photo jrny__a" data-reveal="photo"><Img {...feat.render} sizes="(min-width: 62rem) 30vw, 70vw" /></figure>
+        <figure class="photo jrny__b" data-reveal="photo" data-delay="0.12"><Img {...byId('work-19')} sizes="(min-width: 62rem) 18vw, 40vw" /></figure>
+      </div>
+      <div class="jrny__text">
+        <p class="label eyebrow" data-reveal="fade">{about.journey.eyebrow}</p>
+        <h2 class="display display--2 jrny__h" data-reveal="lines">{about.journey.h2}</h2>
+        <p class="statement jrny__p" data-reveal="fade">{about.journey.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <Enquiry />
+</Base>
+
+<style>
+  .sons__in { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; justify-items: center; text-align: center; }
+  .sons__col { display: none; color: var(--ink); }
+  .sons__col :global(svg) { height: clamp(15rem, 26vw, 23rem); width: auto; }
+  .sons__text { display: grid; gap: 1.75rem; justify-items: center; }
+  .sons__h { max-width: 26ch; line-height: 1.16; }
+  .sons__p { max-width: 50ch; color: var(--on-light-mute); }
+  @media (min-width: 48rem) {
+    .sons__in { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: clamp(1.5rem, 5vw, 5rem); }
+    .sons__col { display: block; }
+    .sons__col--l { grid-column: 1; grid-row: 1; }
+    .sons__text { grid-column: 2; grid-row: 1; }
+    .sons__col--r { grid-column: 3; grid-row: 1; }
+  }
+
+  .diff__head { display: grid; gap: 1.5rem; margin-bottom: clamp(2.5rem, 6vw, 5rem); }
+  .diff__h { max-width: 20ch; }
+  .diff__item { display: grid; gap: 0.9rem; align-content: start; padding-block: 2rem; border-top: 1px solid var(--line-light); }
+  .diff__n { font-size: var(--fs-display-2); line-height: 1; color: var(--brick); }
+  .diff__t { font-size: 1.3rem; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; margin-top: 0.75rem; }
+  .diff__p { color: var(--on-light-mute); max-width: 44ch; }
+  @media (min-width: 56rem) {
+    .diff__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .diff__item { padding: 2.25rem clamp(1.25rem, 2.5vw, 2.5rem) 0.5rem; border-left: 1px solid var(--line-light); }
+    .diff__item:first-child { border-left: 0; padding-left: 0; }
+  }
+
+  .jrny__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  .jrny__media { position: relative; padding-bottom: 14%; max-width: 34rem; }
+  .jrny__a { aspect-ratio: 3 / 4; width: 72%; }
+  .jrny__b { position: absolute; right: 0; bottom: 0; width: 44%; aspect-ratio: 3 / 4; box-shadow: 0 0 0 0.6rem var(--ink); }
+  .jrny__text { display: grid; gap: 1.5rem; align-content: center; }
+  .jrny__h { max-width: 18ch; }
+  .jrny__p { max-width: 36ch; color: rgba(244, 242, 237, 0.88); }
+  @media (min-width: 62rem) {
+    .jrny__in { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; column-gap: clamp(3rem, 8vw, 8rem); }
+  }
+</style>

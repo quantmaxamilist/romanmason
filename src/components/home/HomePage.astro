@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Who from './Who.astro';
+import ServicesStage from './ServicesStage.astro';
+import Why from './Why.astro';
+import WorkStrip from './WorkStrip.astro';
+import Testimonials from './Testimonials.astro';
+import Enquiry from '../kit/Enquiry.astro';
+import { seo } from '../../data/site';
+---
+<Base title={seo.home.title} description={seo.home.description} intro>
+  <link slot="head" rel="preload" as="image" href="/media/video/hero-poster.jpg" fetchpriority="high" />
+  <Hero />
+  <Who />
+  <ServicesStage />
+  <Why />
+  <WorkStrip />
+  <Testimonials />
+  <Enquiry />
+</Base>

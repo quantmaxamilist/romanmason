@@ -1,0 +1,41 @@
+---
+import { home } from '../../data/site';
+import { roman } from '../../data/extra';
+const t = home.testimonials;
+---
+<section class="tm is-light section" data-header-theme="light">
+  <div class="wrap tm__in">
+    <div class="tm__head">
+      <p class="label eyebrow" data-reveal="fade">{t.eyebrow}</p>
+      <h2 class="display display--2 tm__h" data-reveal="lines">{t.h2}</h2>
+    </div>
+    <ol class="tm__list">
+      {t.items.map((q, i) => (
+        <li class="tm__item" data-reveal="fade">
+          <span class="tm__n numeral" aria-hidden="true">{roman(i + 1)}</span>
+          <figure>
+            <blockquote class={i === 0 ? 'statement tm__q tm__q--first' : 'tm__q'}><p>{q.quote}</p></blockquote>
+            <figcaption class="label tm__by">{q.name}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .tm__in { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
+  .tm__head { display: grid; gap: 1.5rem; align-content: start; }
+  .tm__h { max-width: 16ch; }
+  .tm__list { display: grid; }
+  .tm__item { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 0.5rem; padding-block: clamp(1.5rem, 3vw, 2.25rem); border-top: 1px solid var(--line-light); }
+  .tm__item:last-child { border-bottom: 1px solid var(--line-light); }
+  .tm__n { color: var(--brick); font-size: 0.95rem; padding-top: 0.3rem; }
+  .tm__q { font-size: 1.0625rem; line-height: 1.6; max-width: 58ch; text-wrap: pretty; }
+  .tm__q--first { font-size: var(--fs-statement); line-height: 1.32; max-width: 30ch; }
+  .tm__by { margin-top: 1rem; color: var(--on-light-mute); }
+  @media (min-width: 62rem) {
+    .tm__in { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(3rem, 7vw, 7rem); align-items: start; }
+    .tm__head { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+</style>

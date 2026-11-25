@@ -1,0 +1,37 @@
+---
+import { home } from '../../data/site';
+const w = home.why;
+const numerals = ['I', 'II', 'III'];
+---
+<section class="why is-stone section" data-header-theme="light">
+  <div class="wrap">
+    <div class="why__head">
+      <p class="label eyebrow" data-reveal="fade">{w.eyebrow}</p>
+      <h2 class="display display--2 why__h" data-reveal="lines">{w.h2}</h2>
+    </div>
+    <ol class="why__list">
+      {w.points.map((p, i) => (
+        <li class="why__item" data-reveal="fade" data-delay={i * 0.08}>
+          <span class="why__n numeral" aria-hidden="true">{numerals[i]}</span>
+          <h3 class="why__t">{p.title}</h3>
+          <p class="why__p">{p.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .why__head { display: grid; gap: 1.5rem; margin-bottom: clamp(2.5rem, 6vw, 5rem); }
+  .why__h { max-width: 24ch; }
+  .why__list { display: grid; }
+  .why__item { display: grid; gap: 0.9rem; align-content: start; padding-block: 2rem; border-top: 1px solid var(--line-light); }
+  .why__n { font-size: var(--fs-display-2); line-height: 1; color: var(--brick); }
+  .why__t { font-size: 1.3rem; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; margin-top: 0.75rem; }
+  .why__p { color: var(--on-light-mute); max-width: 40ch; }
+  @media (min-width: 56rem) {
+    .why__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .why__item { padding: 2.25rem clamp(1.25rem, 2.5vw, 2.5rem) 0.5rem; border-top: 1px solid var(--line-light); border-left: 1px solid var(--line-light); }
+    .why__item:first-child { border-left: 0; padding-left: 0; }
+  }
+</style>

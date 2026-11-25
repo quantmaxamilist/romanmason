@@ -1,0 +1,40 @@
+---
+import { home } from '../../data/site';
+import { feat } from '../../data/extra';
+import Img from '../kit/Img.astro';
+import Arrow from '../kit/Arrow.astro';
+const w = home.who;
+---
+<section class="who is-light section" data-header-theme="light">
+  <div class="wrap who__in">
+    <div class="who__text">
+      <p class="label eyebrow" data-reveal="fade">{w.eyebrow}</p>
+      <h2 class="display display--2 who__h" data-reveal="lines">{w.h2}</h2>
+      <p class="statement who__p" data-reveal="fade">{w.body}</p>
+      <a class="link who__more" href="/about" data-reveal="fade">{w.cta}<Arrow /></a>
+    </div>
+    <div class="who__media">
+      <figure class="photo who__a" data-reveal="photo">
+        <Img {...feat.joists} sizes="(min-width: 62rem) 40vw, 92vw" />
+      </figure>
+      <figure class="photo who__b" data-reveal="photo" data-delay="0.12">
+        <Img {...feat.roof} sizes="(min-width: 62rem) 22vw, 52vw" />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .who__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  .who__text { display: grid; gap: 1.5rem; justify-items: start; align-content: start; }
+  .who__h { max-width: 22ch; }
+  .who__p { max-width: 34ch; margin-top: 0.5rem; }
+  .who__more { margin-top: 0.5rem; }
+  .who__media { position: relative; padding-bottom: 18%; }
+  .who__a { aspect-ratio: 4 / 4.6; margin-left: 14%; }
+  .who__b { position: absolute; left: 0; bottom: 0; width: 52%; aspect-ratio: 4 / 3; box-shadow: 0 0 0 0.6rem var(--plaster); }
+  @media (min-width: 62rem) {
+    .who__in { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: center; column-gap: clamp(3rem, 8vw, 8rem); }
+    .who__p { max-width: 36ch; }
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/kit/PageHero.astro';
+import Enquiry from '../components/kit/Enquiry.astro';
+import Arrow from '../components/kit/Arrow.astro';
+import { seo } from '../data/site';
+import { roman } from '../data/extra';
+import posts from '../data/posts.json';
+---
+<Base title={seo.blog.title} description={seo.blog.description}>
+  <PageHero title="Blog" compact>
+    <p class="label mute">{posts.length} articles</p>
+  </PageHero>
+
+  <section class="bl is-light section section--tight" data-header-theme="light">
+    <div class="wrap">
+      <ol class="bl__list">
+        {posts.map((p, i) => (
+          <li class="bl__row" data-reveal="fade">
+            <a href={`/${p.path}`}>
+              <span class="bl__n numeral" aria-hidden="true">{roman(posts.length - i)}</span>
+              <span class="bl__meta label">{p.category}<span aria-hidden="true"> · </span><time datetime={p.date.slice(0, 10)}>{p.dateText}</time></span>
+              <span class="bl__main">
+                <h2 class="bl__t">{p.title}</h2>
+                <p class="bl__x">{p.excerpt}</p>
+              </span>
+              <Arrow class="bl__arrow" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Enquiry />
+</Base>
+
+<style>
+  .bl__row { border-top: 1px solid var(--line-light); }
+  .bl__row:last-child { border-bottom: 1px solid var(--line-light); }
+  .bl__row a { position: relative; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 0.6rem 0.5rem; padding: clamp(1.5rem, 3vw, 2.25rem) 2.25rem clamp(1.5rem, 3vw, 2.25rem) 0; }
+  .bl__n { color: var(--brick); font-size: 0.9rem; padding-top: 0.15rem; grid-row: span 2; }
+  .bl__meta { color: var(--on-light-mute); }
+  .bl__main { display: grid; gap: 0.75rem; grid-column: 2; }
+  .bl__t { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: var(--track-display); font-size: var(--fs-display-3); line-height: 1.12; text-wrap: balance; max-width: 30ch; transition: color var(--dur-1); }
+  .bl__x { color: var(--on-light-mute); max-width: 68ch; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .bl__row :global(.bl__arrow) { position: absolute; right: 0.25rem; top: clamp(1.6rem, 3vw, 2.4rem); width: 1.1rem; height: 1.1rem; transition: transform var(--dur-2) var(--ease-out), color var(--dur-1); }
+  .bl__row a:hover .bl__t { color: var(--brick); }
+  .bl__row a:hover :global(.bl__arrow) { transform: translateX(5px); color: var(--brick); }
+  @media (min-width: 62rem) {
+    .bl__row a { grid-template-columns: 3.5rem 14rem minmax(0, 1fr); }
+    .bl__n { grid-row: auto; }
+    .bl__meta { padding-top: 0.3rem; }
+    .bl__main { grid-column: 3; }
+  }
+</style>

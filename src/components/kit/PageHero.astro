@@ -1,0 +1,37 @@
+---
+// Inner-page hero: dark, with the page's real h1. An optional photograph sits to the right on
+// wide screens and behind a shade on small ones. No watermark logos.
+import Img from './Img.astro';
+interface Props { eyebrow?: string; title: string; lead?: string; photo?: { id: string; w: number; h: number; alt: string }; compact?: boolean }
+const { eyebrow, title, lead, photo, compact = false } = Astro.props;
+---
+<section class:list={['ph is-dark', { 'ph--photo': !!photo, 'ph--compact': compact }]} data-header-theme="dark">
+  <div class="wrap ph__in">
+    <div class="ph__text">
+      {eyebrow && <p class="label eyebrow" data-reveal="fade">{eyebrow}</p>}
+      <h1 class="display display--hero ph__h" data-reveal="lines">{title}</h1>
+      {lead && <p class="lead ph__lead" data-reveal="fade" data-delay="0.1">{lead}</p>}
+      <slot />
+    </div>
+    {photo && (
+      <figure class="photo ph__photo" data-reveal="photo" data-delay="0.1">
+        <Img {...photo} sizes="(min-width: 62rem) 42vw, 92vw" eager />
+      </figure>
+    )}
+  </div>
+</section>
+
+<style>
+  .ph { padding-top: calc(var(--header-h) + clamp(3rem, 8vw, 7rem)); padding-bottom: clamp(3rem, 7vw, 6rem); background: radial-gradient(90% 80% at 85% 0%, #1f1c19 0%, var(--ink) 60%); }
+  .ph--compact { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .ph__in { display: grid; gap: clamp(2rem, 5vw, 4rem); }
+  .ph__text { display: grid; gap: clamp(1.1rem, 2vw, 1.75rem); justify-items: start; align-content: end; }
+  .ph__h { max-width: 16em; }
+  .ph--compact .ph__h { font-size: var(--fs-display-2); max-width: 22em; }
+  .ph__lead { max-width: 54ch; color: rgba(244, 242, 237, 0.82); }
+  .ph__photo { aspect-ratio: 4 / 3; }
+  @media (min-width: 62rem) {
+    .ph--photo .ph__in { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; column-gap: clamp(2.5rem, 6vw, 6rem); }
+    .ph__photo { aspect-ratio: 4 / 4.4; }
+  }
+</style>

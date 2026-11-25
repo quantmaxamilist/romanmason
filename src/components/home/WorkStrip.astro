@@ -1,0 +1,67 @@
+---
+import { gallery } from '../../data/site';
+import { work } from '../../data/extra';
+import Arrow from '../kit/Arrow.astro';
+// Twelve of the client's own photographs, shown at or below their native size.
+const row = work.slice(0, 12);
+---
+<section class="ws is-dark section" data-header-theme="dark">
+  <div class="wrap ws__head">
+    <div class="ws__text">
+      <p class="label eyebrow" data-reveal="fade">{gallery.eyebrow}</p>
+      <h2 class="display display--2 ws__h" data-reveal="lines">{gallery.h1}</h2>
+    </div>
+    <div class="ws__side" data-reveal="fade">
+      <p class="mute">{gallery.lead}</p>
+      <a class="link" href="/gallery">Gallery<Arrow /></a>
+    </div>
+  </div>
+
+  <div class="ws__strip" data-ws>
+    <div class="ws__track">
+      {[0, 1].map((dup) => (
+        <ul class="ws__set" aria-hidden={dup ? 'true' : undefined}>
+          {row.map((p) => (
+            <li class="ws__cell photo" style={`aspect-ratio:${p.w}/${p.h}`}>
+              <a href="/gallery" tabindex={dup ? -1 : undefined} aria-label={dup ? undefined : `${p.alt}: open the gallery`}>
+                <img src={`/media/photos/${p.id}.webp`} srcset={`/media/photos/${p.id}-s.webp 480w, /media/photos/${p.id}.webp ${p.w}w`} sizes="(min-width: 48rem) 28rem, 70vw" width={p.w} height={p.h} alt={dup ? '' : p.alt} loading="lazy" decoding="async" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ws { overflow: hidden; padding-bottom: var(--section); }
+  .ws__head { display: grid; gap: 2rem; margin-bottom: clamp(2.5rem, 5vw, 4.5rem); }
+  .ws__text { display: grid; gap: 1.5rem; }
+  .ws__h { max-width: 18ch; }
+  .ws__side { display: grid; gap: 1.25rem; justify-items: start; max-width: 46ch; }
+  @media (min-width: 62rem) {
+    .ws__head { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: end; column-gap: 4rem; }
+  }
+  /* A slow, continuous strip. It moves on transform only, pauses on hover or focus, and is a
+     plain swipeable row for anyone who asks for reduced motion. */
+  .ws__track { display: flex; width: max-content; animation: ws 70s linear infinite; will-change: transform; }
+  .ws__strip:hover .ws__track, .ws__strip:focus-within .ws__track, .ws__strip.is-off .ws__track { animation-play-state: paused; }
+  .ws__set { display: flex; gap: clamp(0.6rem, 1.2vw, 1rem); padding-right: clamp(0.6rem, 1.2vw, 1rem); }
+  .ws__cell { height: clamp(13rem, 24vw, 20rem); flex: none; }
+  .ws__cell a { display: block; height: 100%; }
+  .ws__cell img { transition: transform 1.2s var(--ease-out), filter var(--dur-2); filter: saturate(0.9); }
+  .ws__cell a:hover img { transform: scale(1.04); filter: none; }
+  @keyframes ws { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ws__track { animation: none; }
+    .ws__strip { overflow-x: auto; }
+    .ws__set[aria-hidden='true'] { display: none; }
+  }
+</style>
+
+<script>
+  // Stop the strip's animation while it is off screen.
+  const strip = document.querySelector('[data-ws]');
+  if (strip) new IntersectionObserver(([e]) => strip.classList.toggle('is-off', !e.isIntersecting)).observe(strip);
+</script>

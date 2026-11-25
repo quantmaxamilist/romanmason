@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/kit/PageHero.astro';
+import Arrow from '../components/kit/Arrow.astro';
+import { contact, site, services, seo } from '../data/site';
+const f = contact.form;
+---
+<Base title={seo.contact.title} description={seo.contact.description}>
+  <PageHero eyebrow={contact.eyebrow} title={contact.h1} lead={contact.lead} />
+
+  <section class="ct is-light section section--tight" data-header-theme="light">
+    <div class="wrap ct__in">
+      <dl class="ct__info">
+        <div class="ct__item" data-reveal="fade">
+          <dt class="label">{contact.labels.phone}</dt>
+          <dd><a class="ct__big" href={site.phoneHref}>{site.phone}</a></dd>
+        </div>
+        <div class="ct__item" data-reveal="fade">
+          <dt class="label">{contact.labels.email}</dt>
+          <dd><a class="ct__mail" href={`mailto:${site.email}`}>{site.email}</a></dd>
+        </div>
+        <div class="ct__item" data-reveal="fade">
+          <dt class="label">{contact.labels.location}</dt>
+          <dd class="ct__loc">{site.location}</dd>
+        </div>
+        <div class="ct__social" data-reveal="fade">
+          <a class="link" href={site.social.facebook} target="_blank" rel="noopener">Facebook<Arrow /></a>
+          <a class="link" href={site.social.instagram} target="_blank" rel="noopener">Instagram<Arrow /></a>
+        </div>
+      </dl>
+
+      <!-- No backend yet: the form opens the visitor's email app with the enquiry filled in.
+           Swap `action` for a form service (e.g. Formspree) before going live. -->
+      <form class="fm" id="enquiry" action={`mailto:${site.email}`} method="post" enctype="text/plain" data-email={site.email} data-reveal="fade">
+        <div class="fm__row">
+          <label class="fm__f"><span class="label">{f.name}</span><input type="text" name="Name" autocomplete="name" /></label>
+          <label class="fm__f"><span class="label">{f.email} *</span><input type="email" name="Email" autocomplete="email" required /></label>
+        </div>
+        <label class="fm__f"><span class="label">{f.phone} *</span><input type="tel" name="Phone" autocomplete="tel" inputmode="tel" required /></label>
+        <fieldset class="fm__set">
+          <legend class="label">Services</legend>
+          <div class="fm__checks">
+            {services.map((s) => (
+              <label class="fm__chk"><input type="checkbox" name="Service" value={s.name} data-slug={s.slug} /><span>{s.name}</span></label>
+            ))}
+          </div>
+        </fieldset>
+        <label class="fm__f"><span class="label">{f.message}</span><textarea name="Message" rows="5"></textarea></label>
+        <label class="fm__chk fm__gdpr">
+          <input type="checkbox" name="GDPR" value="Agreed" required />
+          <span>{f.gdpr}{' '}<a href="/cookie-policy">Cookie</a> &amp; <a href="/privacy-policy">privacy policy</a></span>
+        </label>
+        <button class="btn fm__send" type="submit">{f.send}<Arrow class="btn__arrow" /></button>
+        <p class="fm__note" role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ct__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  .ct__info { display: grid; gap: 0; align-content: start; margin: 0; }
+  .ct__item { padding-block: 1.5rem; border-top: 1px solid var(--line-light); display: grid; gap: 0.6rem; }
+  .ct__item dt { color: var(--on-light-mute); }
+  .ct__item dd { margin: 0; }
+  .ct__big { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-display-2); letter-spacing: 0.03em; line-height: 1.05; }
+  .ct__mail { font-size: clamp(1rem, 0.9rem + 0.6vw, 1.3rem); overflow-wrap: anywhere; text-decoration: underline; text-decoration-color: var(--brick); text-underline-offset: 0.25em; text-decoration-thickness: 1px; }
+  .ct__big:hover, .ct__mail:hover { color: var(--brick); }
+  .ct__loc { font-size: clamp(1rem, 0.9rem + 0.6vw, 1.3rem); }
+  .ct__social { display: flex; gap: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line-light); }
+
+  .fm { display: grid; gap: 1.4rem; align-content: start; padding: clamp(1.5rem, 3.5vw, 2.75rem); background: var(--white); border: 1px solid var(--line-light); border-radius: var(--radius); }
+  .fm__row { display: grid; gap: 1.4rem; }
+  .fm__f { display: grid; gap: 0.5rem; }
+  .fm__f .label, .fm__set legend { color: var(--on-light-mute); }
+  .fm input[type='text'], .fm input[type='email'], .fm input[type='tel'], .fm textarea {
+    width: 100%; font: inherit; color: var(--ink); background: var(--plaster); border: 1px solid transparent; border-bottom-color: var(--line-light);
+    border-radius: var(--radius); padding: 0.85rem 0.9rem; min-height: 3rem; transition: border-color var(--dur-1), background-color var(--dur-1);
+  }
+  .fm textarea { resize: vertical; min-height: 8rem; }
+  .fm input:focus, .fm textarea:focus { outline: none; border-color: var(--brick); background: var(--white); }
+  .fm__set { border: 0; padding: 0; margin: 0; display: grid; gap: 0.75rem; min-width: 0; }
+  .fm__set legend { padding: 0; margin-bottom: 0.75rem; }
+  .fm__checks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .fm__chk { display: inline-flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; }
+  .fm__checks .fm__chk { position: relative; align-items: center; min-height: 2.75rem; padding: 0.4rem 0.9rem; border: 1px solid var(--line-light); border-radius: var(--radius); font-size: 0.92rem; transition: background-color var(--dur-1), color var(--dur-1), border-color var(--dur-1); }
+  .fm__checks .fm__chk input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .fm__checks .fm__chk:has(input:checked) { background: var(--ink); color: var(--plaster); border-color: var(--ink); }
+  .fm__checks .fm__chk:has(input:focus-visible) { outline: 2px solid var(--brick); outline-offset: 2px; }
+  .fm__gdpr { font-size: var(--fs-small); color: var(--on-light-mute); line-height: 1.5; }
+  .fm__gdpr input { width: 1.15rem; height: 1.15rem; flex: none; margin-top: 0.15rem; accent-color: var(--brick); }
+  .fm__gdpr a { text-decoration: underline; color: var(--ink); }
+  .fm__send { justify-self: start; }
+  .fm__note { font-size: var(--fs-small); color: var(--on-light-mute); }
+  .fm__note[hidden] { display: none; }
+  @media (min-width: 40rem) { .fm__row { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 62rem) {
+    .ct__in { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(3rem, 7vw, 7rem); align-items: start; }
+    .ct__info { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('enquiry');
+  if (form) {
+    // /contact?service=<slug> arrives with that service already ticked.
+    const want = new URLSearchParams(location.search).get('service');
+    if (want) form.querySelectorAll('input[data-slug]').forEach((c) => { if (c.dataset.slug === want) c.checked = true; });
+    form.addEventListener('submit', (e) => {
+      if (!form.reportValidity()) return;
+      e.preventDefault();
+      const d = new FormData(form);
+      const lines = [
+        `Name: ${d.get('Name') || ''}`,
+        `Email: ${d.get('Email') || ''}`,
+        `Phone: ${d.get('Phone') || ''}`,
+        `Services: ${d.getAll('Service').join(', ') || 'Not specified'}`,
+        '',
+        `${d.get('Message') || ''}`,
+      ];
+      location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Website enquiry')}&body=${encodeURIComponent(lines.join('\n'))}`;
+      const note = form.querySelector('.fm__note');
+      note.hidden = false;
+      note.textContent = 'Your email app should now open with your enquiry ready to send.';
+    });
+  }
+</script>

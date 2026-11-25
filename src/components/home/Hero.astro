@@ -1,0 +1,172 @@
+---
+import { home, site, services } from '../../data/site';
+import Arrow from '../kit/Arrow.astro';
+const h = home.hero;
+---
+<section class="hero is-dark" data-header-theme="dark" id="top">
+  <div class="hero__media" aria-hidden="true">
+    <video class="hero__video" muted loop playsinline preload="none" poster="/media/video/hero-poster.jpg"
+      data-src-lg="/media/video/hero-1080.mp4" data-src-sm="/media/video/hero-720.mp4"></video>
+    <div class="hero__shade"></div>
+  </div>
+
+  <div class="wrap hero__in">
+    <p class="label eyebrow hero__eyebrow" data-hero>{h.eyebrow}</p>
+    <h1 class="display display--hero hero__h1" data-hero>{h.h1}</h1>
+    <p class="lead hero__lead" data-hero>{h.lead}</p>
+    <div class="hero__act" data-hero>
+      <a class="btn" href="/contact">{h.cta}<Arrow class="btn__arrow" /></a>
+      <a class="hero__tel" href={site.phoneHref}>
+        <span class="label mute">Call</span>
+        <span class="hero__num">{site.phone}</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="wrap hero__rail" data-hero>
+    <ul class="hero__idx">
+      {services.map((s) => (
+        <li><a href={`/services#${s.slug}`}><span class="numeral">{s.numeral}</span><span class="label">{s.name.replace('Internal & External ', '')}</span></a></li>
+      ))}
+    </ul>
+    <p class="label hero__loc">{site.location}</p>
+  </div>
+</section>
+
+<!-- Intro: the temple from the logo is a doorway onto the film; the camera walks through it. -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__stage">
+    <i class="intro__p intro__p--t"></i>
+    <i class="intro__p intro__p--b"></i>
+    <i class="intro__p intro__p--l"></i>
+    <i class="intro__p intro__p--r"></i>
+    <i class="intro__door"></i>
+    <img class="intro__logo" src="/brand/logo-full-white.svg" width="288" height="314" alt="" />
+  </div>
+</div>
+
+<style>
+  .hero { position: relative; min-height: max(100svh, 38rem); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; isolation: isolate; }
+  .hero__media { position: absolute; inset: 0; z-index: -1; background: var(--ink) url('/media/video/hero-poster.jpg') center / cover no-repeat; }
+  .hero__video { width: 100%; height: 100%; object-fit: cover; }
+  .hero__shade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(13, 12, 11, 0.62) 0%, rgba(13, 12, 11, 0) 22%),
+      linear-gradient(0deg, rgba(13, 12, 11, 0.94) 0%, rgba(13, 12, 11, 0.6) 34%, rgba(13, 12, 11, 0.12) 68%, rgba(13, 12, 11, 0.2) 100%),
+      linear-gradient(90deg, rgba(13, 12, 11, 0.55) 0%, rgba(13, 12, 11, 0.15) 70%, rgba(13, 12, 11, 0) 100%);
+  }
+  .hero__in { display: grid; gap: clamp(1rem, 0.6rem + 1.2vw, 1.6rem); justify-items: start; padding-top: calc(var(--header-h) + 2rem); padding-bottom: clamp(1.75rem, 4vw, 3rem); }
+  .hero__eyebrow { color: var(--on-dark); }
+  .hero__eyebrow::before { background: var(--brick-lit); }
+  .hero__h1 { max-width: 18.5em; }
+  .hero__lead { max-width: 46ch; color: rgba(244, 242, 237, 0.86); }
+  .hero__act { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-top: 0.4rem; }
+  .hero__tel { display: grid; gap: 0.1rem; min-height: 3.25rem; align-content: center; }
+  .hero__num { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.2rem, 1rem + 0.7vw, 1.55rem); letter-spacing: 0.05em; line-height: 1; }
+  .hero__tel:hover .hero__num { color: var(--brick-lit); }
+  .hero__rail { display: none; }
+  @media (min-width: 62rem) {
+    .hero__rail { display: flex; justify-content: space-between; align-items: center; gap: 2rem; border-top: 1px solid var(--line-dark); padding-block: 1.1rem 1.4rem; }
+    .hero__idx { display: flex; flex-wrap: wrap; gap: 0.25rem clamp(1.25rem, 2.4vw, 2.75rem); }
+    .hero__idx a { display: inline-flex; align-items: baseline; gap: 0.6rem; padding-block: 0.4rem; color: rgba(244, 242, 237, 0.78); transition: color var(--dur-1); }
+    .hero__idx a:hover { color: var(--white); }
+    .hero__idx .numeral { color: var(--brick-lit); font-size: 0.8rem; min-width: 1.2em; }
+    .hero__loc { color: var(--on-dark-mute); white-space: nowrap; }
+  }
+
+  /* Entrance: hidden only when JS is running; a failsafe shows the text if the script never fires. */
+  :global(.js) .hero [data-hero] { opacity: 0; transform: translateY(26px); animation: heroFailsafe 0.01s 5s forwards; }
+  @keyframes heroFailsafe { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { :global(.js) .hero [data-hero] { opacity: 1; transform: none; animation: none; } }
+
+  /* ---- Intro ---------------------------------------------------------------- */
+  .intro { position: fixed; inset: 0; z-index: var(--z-intro); display: none; overflow: hidden; contain: strict; }
+  :global(.intro-on) .intro { display: block; animation: introFailsafe 0.4s 7s forwards; }
+  @keyframes introFailsafe { to { opacity: 0; visibility: hidden; } }
+  .intro__stage {
+    /* --u = one unit of the logo's 288 × 314 drawing, in px. The doorway between the columns
+       (127.1 × 143.4 units, centred at 144.15, 130.5) sits at the centre of the screen. */
+    --u: calc(min(58svh, 82vw) / 314.313);
+    position: absolute; left: 50%; top: 50%; width: 0; height: 0;
+    transform-origin: 0 0; will-change: transform;
+  }
+  .intro__p { position: absolute; background: var(--ink); }
+  .intro__p--t { left: -62vmax; width: 124vmax; bottom: calc(71.7 * var(--u)); height: 62vmax; }
+  .intro__p--b { left: -62vmax; width: 124vmax; top: calc(71.7 * var(--u)); height: 62vmax; }
+  .intro__p--l { right: calc(63.55 * var(--u)); width: 62vmax; top: calc(-71.7 * var(--u) - 1px); height: calc(143.4 * var(--u) + 2px); }
+  .intro__p--r { left: calc(63.55 * var(--u)); width: 62vmax; top: calc(-71.7 * var(--u) - 1px); height: calc(143.4 * var(--u) + 2px); }
+  .intro__door { position: absolute; left: calc(-63.55 * var(--u) - 1px); top: calc(-71.7 * var(--u) - 1px); width: calc(127.1 * var(--u) + 2px); height: calc(143.4 * var(--u) + 2px); background: var(--ink); }
+  .intro__logo { position: absolute; left: calc(-144.15 * var(--u)); top: calc(-130.5 * var(--u)); width: calc(288.369 * var(--u)); max-width: none; height: auto; opacity: 0; }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { lenis, reduced, arrived } from '../../scripts/core.js';
+
+  const html = document.documentElement;
+  const hero = document.querySelector('.hero');
+  const video = hero?.querySelector('.hero__video');
+  const items = hero ? [...hero.querySelectorAll('[data-hero]')] : [];
+  const intro = document.getElementById('intro');
+
+  // Film: 1080p on desktop, 720p on phones; paused whenever the hero is off screen.
+  if (video) {
+    const small = matchMedia('(max-width: 720px)').matches;
+    const saveData = navigator.connection?.saveData;
+    if (!reduced && !saveData) {
+      video.src = small ? video.dataset.srcSm : video.dataset.srcLg;
+      video.load();
+      const play = () => video.play().catch(() => {});
+      play();
+      new IntersectionObserver(([e]) => { if (e.isIntersecting) play(); else video.pause(); }, { threshold: 0.05 }).observe(hero);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) video.pause(); else if (hero.getBoundingClientRect().bottom > 0) play(); });
+    }
+  }
+
+  const showText = (delay = 0) => {
+    if (reduced) return;
+    gsap.to(items, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.08, delay, overwrite: true });
+    items.forEach((el) => { el.style.animation = 'none'; });
+  };
+
+  if (intro && html.classList.contains('intro-on')) {
+    try { sessionStorage.setItem('rmc:intro', '1'); } catch { /* ignore */ }
+    const stage = intro.querySelector('.intro__stage');
+    const logo = intro.querySelector('.intro__logo');
+    const door = intro.querySelector('.intro__door');
+    lenis?.stop();
+    scrollTo(0, 0);
+    // How far the doorway has to grow to cover the screen.
+    const u = Math.min(innerHeight * 0.58, innerWidth * 0.82) / 314.313;
+    const S = Math.max(innerWidth / (127.1 * u), innerHeight / (143.4 * u)) * 1.1;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      html.classList.remove('intro-on');
+      intro.remove();
+      lenis?.start();
+      gsap.ticker.lagSmoothing(0);
+      document.dispatchEvent(new CustomEvent('rmc:intro-done'));
+      ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => removeEventListener(ev, skip, true));
+    };
+    const tl = gsap.timeline({ paused: true, onComplete: finish });
+    tl.fromTo(logo, { opacity: 0, scale: 0.965, transformOrigin: '50% 41.5%' }, { opacity: 1, scale: 1, duration: 0.55, ease: 'power2.out' }, 0.05)
+      .to(door, { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 0.3)
+      .to(stage, { scale: S, duration: 1.25, ease: 'expo.inOut' }, 0.95)
+      .to(logo, { opacity: 0, duration: 0.4, ease: 'power1.in' }, 1.25)
+      .call(() => showText(0), null, 1.75);
+    // Start only once the logo is decoded and the browser has painted a frame, so start-up work
+    // on a slow phone cannot eat the beginning of the animation.
+    // While the intro runs, a long frame pauses the animation instead of skipping ahead.
+    gsap.ticker.lagSmoothing(250, 33);
+    const go = () => requestAnimationFrame(() => requestAnimationFrame(() => { if (!done) tl.play(0); }));
+    Promise.race([logo.decode?.().catch(() => {}) ?? Promise.resolve(), new Promise((r) => setTimeout(r, 700))]).then(go);
+    function skip() { if (!done) { tl.progress(1); showText(0); } }
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => addEventListener(ev, skip, { capture: true, passive: true }));
+  } else {
+    intro?.remove();
+    arrived.then(() => showText(0.05));
+  }
+</script>

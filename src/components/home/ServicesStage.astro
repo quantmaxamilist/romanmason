@@ -1,0 +1,60 @@
+---
+import { home, services } from '../../data/site';
+import Arrow from '../kit/Arrow.astro';
+import WowTemple from '../wow/WowTemple.astro';
+const s = home.services;
+---
+<section class="stage is-dark" data-header-theme="dark" data-hold-header data-stage id="services">
+  <div class="wrap stage__head">
+    <div class="stage__title">
+      <p class="label eyebrow" data-reveal="fade">{s.eyebrow}</p>
+      <h2 class="display display--2 stage__h" data-reveal="lines">{s.h2}</h2>
+    </div>
+    <a class="link stage__all" href="/services" data-reveal="fade">{s.cta}<Arrow /></a>
+  </div>
+
+  <div class="wrap stage__body">
+    <div class="stage__wow">
+      <WowTemple />
+    </div>
+    <ol class="stage__list" data-wow-list>
+      {services.map((sv) => (
+        <li class="stage__row" data-part={sv.part}>
+          <a href={`/services#${sv.slug}`}>
+            <span class="stage__n numeral" aria-hidden="true">{sv.numeral}</span>
+            <span class="stage__txt">
+              <h3 class="stage__name">{sv.name}</h3>
+              <p class="stage__p">{sv.homeBody ?? sv.body}</p>
+            </span>
+            <Arrow class="stage__arrow" />
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .stage { position: relative; padding-block: var(--section); overflow: clip; background: radial-gradient(120% 70% at 28% 58%, #1d1b18 0%, var(--ink) 62%); }
+  .stage__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.5rem 3rem; margin-bottom: clamp(1.5rem, 4vw, 3.5rem); }
+  .stage__title { display: grid; gap: 1.5rem; }
+  .stage__h { max-width: 20ch; }
+  .stage__body { display: grid; gap: clamp(1rem, 3vw, 2.5rem); }
+  .stage__list { display: grid; align-content: start; }
+  .stage__row { border-top: 1px solid var(--line-dark); }
+  .stage__row:last-child { border-bottom: 1px solid var(--line-dark); }
+  .stage__row a { position: relative; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 0.5rem; padding: 1.4rem 2.25rem 1.5rem 0; transition: background-color var(--dur-2) var(--ease-out); }
+  .stage__n { color: var(--brick-lit); font-size: 0.95rem; padding-top: 0.28rem; }
+  .stage__txt { display: grid; gap: 0.5rem; }
+  .stage__name { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(1.05rem, 0.9rem + 0.55vw, 1.4rem); line-height: 1.15; letter-spacing: var(--track-display); transition: color var(--dur-1); }
+  .stage__p { color: var(--on-dark-mute); font-size: 0.95rem; line-height: 1.55; max-width: 54ch; }
+  .stage__row :global(.stage__arrow) { position: absolute; right: 0.25rem; top: 1.65rem; width: 1rem; height: 1rem; color: var(--on-dark-mute); transition: transform var(--dur-2) var(--ease-out), color var(--dur-1); }
+  .stage__row a:hover .stage__name, .stage__row.is-lit .stage__name { color: var(--brick-lit); }
+  .stage__row a:hover :global(.stage__arrow), .stage__row.is-lit :global(.stage__arrow) { transform: translateX(4px); color: var(--brick-lit); }
+  /* The list keeps its place and size; it is only faded in once the build has finished. */
+  :global(.js) .stage__list.is-armed:not(.is-built) .stage__row { opacity: 0; }
+  @media (min-width: 62rem) {
+    .stage__body { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: start; column-gap: clamp(2rem, 5vw, 5rem); }
+    .stage__wow { position: sticky; top: calc(var(--header-h) + 0.5rem); }
+  }
+</style>

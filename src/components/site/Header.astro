@@ -1,0 +1,146 @@
+---
+import { site, nav } from '../../data/site';
+import TempleMark from './TempleMark.astro';
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
+// Blog posts live at /YYYY/MM/DD/slug, so they count as "Blog".
+const inPost = /^\/20\d\d\//.test(path);
+---
+<header class="hdr" id="hdr" data-theme="dark">
+  <div class="hdr__in">
+    <a class="hdr__logo" href="/" aria-label={`${site.name}: home`}>
+      <span class="hdr__logo-img" aria-hidden="true"></span>
+    </a>
+    <nav class="hdr__nav" aria-label="Main">
+      {nav.slice(1).map((n) => (
+        <a href={n.href} aria-current={isCurrent(n.href) || (n.href === '/blog' && inPost) ? 'page' : undefined}><span>{n.label}</span></a>
+      ))}
+    </nav>
+    <div class="hdr__act">
+      <a class="hdr__tel" href={site.phoneHref} aria-label={`Call ${site.phone}`}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" stroke-linejoin="round"/></svg>
+        <span>{site.phone}</span>
+      </a>
+      <a class="btn hdr__cta" href="/contact">Get A Quote</a>
+      <button class="hdr__burger" type="button" data-menu-open aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="menu__top">
+    <a class="hdr__logo" href="/" aria-label={`${site.name}: home`}><span class="hdr__logo-img" aria-hidden="true"></span></a>
+    <button class="menu__close label" type="button" data-menu-close>Close</button>
+  </div>
+  <nav class="menu__nav" aria-label="Menu">
+    {nav.map((n, i) => (
+      <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+        <span class="menu__n numeral">{['I', 'II', 'III', 'IV', 'V', 'VI'][i]}</span>
+        <span class="menu__t display">{n.label}</span>
+      </a>
+    ))}
+  </nav>
+  <div class="menu__foot">
+    <a class="btn" href="/contact">Get A Quote</a>
+    <a class="menu__tel" href={site.phoneHref}>{site.phone}</a>
+    <a class="menu__mail" href={`mailto:${site.email}`}>{site.email}</a>
+  </div>
+  <TempleMark class="menu__mark" />
+</div>
+
+<style>
+  .hdr {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-header);
+    height: var(--header-h);
+    color: var(--on-dark);
+    transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), border-color var(--dur-2);
+    border-bottom: 1px solid transparent;
+    will-change: transform;
+  }
+  /* Solid translucent fill once scrolled: no backdrop-filter (expensive over moving video). */
+  .hdr.is-solid { background: rgba(13, 12, 11, 0.985); border-bottom-color: var(--line-dark); }
+  .hdr.is-solid[data-theme='light'] { background: rgba(244, 242, 237, 0.985); color: var(--on-light); border-bottom-color: var(--line-light); }
+  .hdr:not(.is-solid)[data-theme='light'] { color: var(--on-light); }
+  .hdr__in {
+    height: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .hdr__logo { display: block; flex: none; padding-block: 0.5rem; }
+  .hdr__logo-img {
+    display: block;
+    width: clamp(7.6rem, 6.4rem + 3vw, 9.4rem);
+    aspect-ratio: 288 / 75;
+    background: currentColor;
+    -webkit-mask: url('/brand/logo-compact-white.svg') center / contain no-repeat;
+    mask: url('/brand/logo-compact-white.svg') center / contain no-repeat;
+  }
+  .hdr__nav { display: none; gap: clamp(1.25rem, 2.2vw, 2.5rem); }
+  .hdr__nav a {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    padding-block: 0.75rem;
+  }
+  .hdr__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0.35rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: 100% 50%;
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+  .hdr__nav a:hover::after, .hdr__nav a[aria-current='page']::after { transform: scaleX(1); transform-origin: 0 50%; }
+  .hdr__nav a[aria-current='page']::after { background: var(--brick-lit); }
+  .hdr__act { display: flex; align-items: center; gap: clamp(0.75rem, 1.6vw, 1.5rem); }
+  .hdr__tel { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.04em; min-height: 2.75rem; }
+  .hdr__tel svg { width: 1.15rem; height: 1.15rem; flex: none; }
+  .hdr__tel span { display: none; }
+  .hdr__cta { min-height: 2.6rem; padding-inline: 1.1rem; display: none; }
+  .hdr[data-theme='light'] .hdr__cta { --btn-hover: var(--ink); --btn-hover-fg: var(--plaster); }
+  .hdr__burger { width: 2.75rem; height: 2.75rem; display: grid; place-content: center; gap: 7px; margin-right: -0.5rem; }
+  .hdr__burger span { display: block; width: 1.6rem; height: 1.5px; background: currentColor; }
+  @media (min-width: 30rem) { .hdr__cta { display: inline-flex; } }
+  @media (min-width: 48rem) { .hdr__tel span { display: inline; } }
+  @media (min-width: 68.75rem) {
+    .hdr__nav { display: flex; }
+    .hdr__burger { display: none; }
+  }
+
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-menu);
+    background: var(--ink);
+    color: var(--on-dark);
+    display: flex;
+    flex-direction: column;
+    padding: 0 var(--gutter) 2rem;
+    overflow: hidden auto;
+  }
+  .menu[hidden] { display: none; }
+  .menu__top { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; flex: none; }
+  .menu__close { min-height: 2.75rem; padding-inline: 0.5rem; margin-right: -0.5rem; }
+  .menu__nav { display: grid; margin-block: auto; padding-block: 1.5rem; position: relative; z-index: 1; }
+  .menu__nav a { display: grid; grid-template-columns: 3rem 1fr; align-items: baseline; padding-block: 0.7rem; border-bottom: 1px solid var(--line-dark); }
+  .menu__n { color: var(--brick-lit); font-size: 0.85rem; }
+  .menu__t { font-size: clamp(1.7rem, 7.4vw, 2.6rem); }
+  .menu__nav a[aria-current='page'] .menu__t { color: var(--brick-lit); }
+  .menu__foot { display: grid; gap: 0.9rem; justify-items: start; position: relative; z-index: 1; }
+  .menu__tel { font-family: var(--font-mono); font-size: 1.05rem; letter-spacing: 0.04em; }
+  .menu__mail { font-size: 0.9rem; color: var(--on-dark-mute); overflow-wrap: anywhere; }
+  .menu :global(.menu__mark) { position: absolute; right: -12%; bottom: -4%; width: 78%; color: rgba(244, 242, 237, 0.045); pointer-events: none; }
+</style>

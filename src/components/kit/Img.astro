@@ -1,0 +1,12 @@
+---
+// One image helper for every photograph. `feat-*` masters are 1920px (or 1302px portrait) with
+// 640/1100 variants; `work-*` masters are the client's 480–801px gallery photos with a 480 variant.
+interface Props { id: string; w: number; h: number; alt: string; sizes?: string; eager?: boolean; class?: string }
+const { id, w, h, alt, sizes = '100vw', eager = false, class: className = '' } = Astro.props;
+const base = `/media/photos/${id}`;
+const isFeat = id.startsWith('feat-');
+const srcset = isFeat
+  ? `${base}-s.webp 640w, ${base}-m.webp 1100w, ${base}.webp ${w}w`
+  : `${base}-s.webp 480w, ${base}.webp ${w}w`;
+---
+<img class={className} src={`${base}.webp`} srcset={srcset} sizes={sizes} width={w} height={h} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : undefined} />

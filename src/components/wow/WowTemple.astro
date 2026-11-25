@@ -1,0 +1,58 @@
+---
+// Wow A, "The Temple": the logo's temple built in 3D stone. Plays itself once when half on screen.
+---
+<div class="tw" data-wow="temple">
+  <canvas class="tw__canvas" aria-hidden="true"></canvas>
+  <img class="tw__poster" src="/media/temple-poster.webp" width="1020" height="958" alt="The temple from the Roman Mason Construction logo: two fluted columns, a pediment dated 2021, and a mason's square and compasses" loading="lazy" decoding="async" />
+  <button class="tw__replay label" type="button" data-replay hidden>
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M13.500 8A5.500 5.500 0 1 1 11.700 3.900M13.500 2v3h-3"/></svg>
+    Replay
+  </button>
+</div>
+
+<style>
+  .tw { position: relative; width: 100%; aspect-ratio: 1 / 0.94; max-height: min(calc(100svh - var(--header-h) - 2rem), 46rem); margin-inline: auto; }
+  .tw__canvas { position: absolute; inset: 0; width: 100%; height: 100%; -webkit-mask-image: linear-gradient(0deg, transparent 0, #000 16%); mask-image: linear-gradient(0deg, transparent 0, #000 16%); }
+  .tw__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  /* With JS the canvas draws the temple; the still image is only for reduced motion or no WebGL. */
+  :global(.js) .tw:not(.is-fallback) .tw__poster { display: none; }
+  .tw.is-fallback .tw__canvas { display: none; }
+  .tw__replay { position: absolute; left: 50%; bottom: 0.25rem; translate: -50% 0; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding-inline: 1rem; color: var(--on-dark-mute); transition: color var(--dur-1); }
+  .tw__replay:hover { color: var(--white); }
+  .tw__replay svg { width: 0.95rem; height: 0.95rem; }
+  .tw__replay[hidden] { display: none; }
+</style>
+
+<script>
+  import { reduced } from '../../scripts/core.js';
+  import { wowList } from '../../scripts/wow-list.js';
+
+  const root = document.querySelector('[data-wow="temple"]');
+  if (root) {
+    const list = wowList(root);
+    const webgl = (() => {
+      try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; }
+    })();
+    const fallback = () => { root.classList.add('is-fallback'); list.built(); };
+    if (reduced || !webgl) fallback();
+    else {
+      list.arm();
+      let mounting = null;
+      const mount = () => (mounting ||= import('../../scripts/temple.js')
+        .then((m) => m.mountTemple(root, { onDone: () => list.built() }))
+        .then((api) => { list.onHover((part) => api.highlight(part)); list.onReplay(() => api.replay()); })
+        .catch((err) => { console.warn('temple', err); fallback(); }));
+      // Prepare the scene in idle time soon after load (never during the homepage intro), so it is
+      // ready long before the section arrives. If the visitor gets there first, start at once.
+      const idle = () => (window.requestIdleCallback || ((f) => setTimeout(f, 900)))(() => mount(), { timeout: 3500 });
+      if (document.documentElement.classList.contains('intro-on')) document.addEventListener('rmc:intro-done', idle, { once: true });
+      else idle();
+      const near = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        near.disconnect();
+        mount();
+      }, { rootMargin: '100% 0px' });
+      near.observe(root);
+    }
+  }
+</script>

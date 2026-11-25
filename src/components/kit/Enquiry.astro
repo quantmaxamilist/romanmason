@@ -1,0 +1,34 @@
+---
+// The one loud colour moment: the enquiry band in brick, drawn as a stretcher-bond wall.
+import { home, site } from '../../data/site';
+import Arrow from './Arrow.astro';
+const c = home.cta;
+---
+<section class="enq is-brick" data-header-theme="dark" id="enquire">
+  <div class="enq__wall" aria-hidden="true"></div>
+  <div class="wrap enq__in">
+    <p class="label eyebrow" data-reveal="fade">{c.eyebrow}</p>
+    <h2 class="display display--2 enq__h" data-reveal="lines">{c.h2}</h2>
+    <p class="lead enq__p" data-reveal="fade">{c.body}</p>
+    <div class="enq__act" data-reveal="fade">
+      <a class="btn" href="/contact">{c.cta}<Arrow class="btn__arrow" /></a>
+      <a class="enq__tel" href={site.phoneHref}><span class="label">Call</span><span class="enq__num">{site.phone}</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .enq { position: relative; overflow: hidden; padding-block: var(--section); isolation: isolate; }
+  /* Mortar joints in stretcher bond: one SVG tile, two courses high, the second offset by half a brick. */
+  .enq__wall {
+    position: absolute; inset: 0; z-index: -1; opacity: 0.55;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='80' viewBox='0 0 120 80'%3E%3Cpath d='M0 .75h120M0 40.75h120M.75 0v40M60.75 40v40' stroke='%238a3019' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") 0 0 / 7.5rem 5rem;
+  }
+  .enq__in { display: grid; gap: 1.5rem; justify-items: start; }
+  .enq__h { max-width: 22ch; }
+  .enq__p { max-width: 52ch; }
+  .enq__act { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2.25rem; margin-top: 1rem; }
+  .enq__tel { display: grid; gap: 0.15rem; min-height: 3.25rem; align-content: center; }
+  .enq__num { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.35rem, 1rem + 1vw, 1.8rem); letter-spacing: 0.04em; line-height: 1; background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat; transition: background-size var(--dur-2) var(--ease-out); padding-bottom: 0.2rem; }
+  .enq__tel:hover .enq__num { background-size: 100% 1px; }
+</style>

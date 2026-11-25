@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import TempleMark from '../components/site/TempleMark.astro';
+import Arrow from '../components/kit/Arrow.astro';
+import { site } from '../data/site';
+---
+<Base title={`Page not found - ${site.name}`} noindex>
+  <section class="nf is-dark" data-header-theme="dark">
+    <div class="wrap nf__in">
+      <TempleMark class="nf__mark" />
+      <p class="label eyebrow">Error 404</p>
+      <h1 class="display display--2">Page not found</h1>
+      <p class="lead mute">The page you were looking for has moved or no longer exists.</p>
+      <div class="nf__act">
+        <a class="btn" href="/">Home<Arrow class="btn__arrow" /></a>
+        <a class="link" href="/contact">Contact<Arrow /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 100svh; display: grid; align-items: center; padding-block: calc(var(--header-h) + 3rem) 4rem; }
+  .nf__in { display: grid; gap: 1.25rem; justify-items: start; }
+  .nf :global(.nf__mark) { width: clamp(6rem, 14vw, 9rem); color: var(--on-dark); margin-bottom: 1.5rem; }
+  .nf__act { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; margin-top: 1rem; }
+</style>
